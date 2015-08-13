@@ -1,4 +1,4 @@
-# ContactManager
+# VPNGuard
 PocketMine-MP Plugin: VPNGuard will prevent players from joining your server behind any type of anonymizer.
 
 This plugin is a port of the Bukkit Version: https://www.spigotmc.org/resources/vpnguard.6246/
