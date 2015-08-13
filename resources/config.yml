@@ -1,0 +1,22 @@
+## VPN GUARD (MCPE Edition) ##
+
+# If you have purchased the premium API enter the key otherwise leave blank.
+# You can purchase a key from: http://xioax.com/host-blocker/
+api-key: ""
+
+# Enable caching of API requests? If so specify time in hours to keep the cached file.
+api-cache: true
+api-cache-time: 24
+
+# Kick Message to the user who tries to login with a anonymizer.
+kick-message: "You seem to be using a VPN or Proxy."
+
+# Timeout in seconds for connecting to the API server.
+# If it takes longer to connect the plugin will assume API server is down.
+timeout: 10
+
+# Allow users to connect if API Server encounters any errors (Such as Timeout)?
+bypass-check: false
+
+# Kick message to display if bypass-check is on false.
+bypass-message: "Unable to perform anonymization checks."

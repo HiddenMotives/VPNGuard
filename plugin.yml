@@ -1,0 +1,28 @@
+name: VPNGuard
+main: basprohop\VPNGuard
+version: 1.0.0
+api: [1.10.0]
+load: STARTUP
+author: basprohop
+description: VPNGuard will prevent players from joining your server behind any type of anonymizer.
+commands:
+    vpnguard:
+        usage: /vpnguard <command>
+        description: Main command for managing VPNGuard related tasks
+        permission: vpnguard.command.vpnguard
+permissions:
+    vpnguard.command.vpnguard:
+        default: true
+        description: Allows you to use the VPNGuard command
+    vpnguard.command.clearcache:
+        default: op
+        description: Deletes all locally saved cache files
+    vpnguard.command.clearip:
+        default: op
+        description: Deletes the locally saved cache file for the specified IP address
+    vpnguard.command.lookup:
+        default: op
+        description: Allows you to search any IP address in-game and check whether or not it belongs to a hosting organization
+    vpnguard.command.about:
+        default: true
+        description: General information about the plugin
