@@ -25,8 +25,6 @@ class VPNGuard extends PluginBase implements Listener
         
         $this->commands = new CommandFunctions($this);
 
-        $this->commands = new CommandFunctions($this);
-
         //If API Cache is Enabled make Cache folder and initialize $cache
         if($this->cfg["api-cache"]) {
             @mkdir($this->getDataFolder() . "cache/");
