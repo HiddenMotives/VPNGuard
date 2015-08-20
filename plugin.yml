@@ -1,6 +1,6 @@
 name: VPNGuard
 main: basprohop\VPNGuard
-version: 1.0.0
+version: 1.0.3
 api: [1.10.0]
 load: STARTUP
 author: basprohop

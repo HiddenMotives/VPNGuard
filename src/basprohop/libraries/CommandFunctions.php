@@ -3,6 +3,7 @@ namespace basprohop\libraries;
 
 use basprohop\VPNGuard;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
 class CommandFunctions
@@ -76,34 +77,20 @@ class CommandFunctions
     /**
      * Function that is executed when /vpnguard lookup <ip> is invoked
      * Looks up information regarding the specified IP address and displays it to user.
-     * @param CommandSender $sender - Command Sender.
+     * @param CommandSender $sender - Player that sent the command.
      * @param $ip - IP address that will be checked.
      */
     public function cmdLookup(CommandSender $sender, $ip) {
-        if (!filter_var($ip, FILTER_VALIDATE_IP) === false) {
-            $obj = $this->plugin->getJSON($ip);
-            if(empty($obj)) {
-                $sender->sendMessage($this->plugin->msg("API Server Seems to be Down, try again later."));
-                return;
+        if($sender instanceof Player) {
+            if (!filter_var($ip, FILTER_VALIDATE_IP) === false) {
+                $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(
+                    new Async(2, $sender->getName(), $ip, $this->plugin->getUserAgent(),
+                        $this->plugin->cfg, $this->plugin->cache));
             } else {
-                if ($obj['status'] === "success") {
-                    if ($obj['host-ip']) {
-                        $provider = $obj["org"];
-                        $countryCode = $obj["cc"];
-
-                        $sender->sendMessage($this->plugin->msg($ip . " belongs to a hosting organization"));
-                        $sender->sendMessage($this->plugin->msg("IP Details: " . $provider . "," . $countryCode));
-
-                    } else {
-                        $sender->sendMessage($this->plugin->msg($ip . " does not seem to belong to a hosting organization."));
-                        $sender->sendMessage($this->plugin->msg("If you believe this is an error please report it to us to have it fixed."));
-                    }
-                } else {
-                    $sender->sendMessage($this->plugin->msg("API Server Returned Error Message: " . $obj["msg"]));
-                }
+                $sender->sendMessage($this->plugin->msg($ip . " is not a valid IP address."));
             }
         } else {
-            $sender->sendMessage($this->plugin->msg($ip . " is not a valid IP address."));
+            $sender->sendMessage($this->plugin->msg("This command can only be run in-game."));
         }
     }
 
@@ -114,7 +101,7 @@ class CommandFunctions
      */
     public function cmdAbout(CommandSender $sender) {
         $sender->sendMessage($this->plugin->msg("VPNGuard v" . $this->plugin->getDescription()->getVersion()));
-        if(empty($this->plugin->apiKey)) {
+        if(empty($this->plugin->cfg["api-key"])) {
             $sender->sendMessage($this->plugin->msg("Using API Key? " . TextFormat::GRAY . "NO"));
         } else {
             $sender->sendMessage($this->plugin->msg("Using API Key? " . TextFormat::GREEN . "YES"));

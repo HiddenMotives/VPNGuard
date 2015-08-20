@@ -4,7 +4,8 @@
 # You can purchase a key from: http://xioax.com/host-blocker/
 api-key: ""
 
-# Enable caching of API requests? If so specify time in hours to keep the cached file.
+# Enable caching of API requests? If so specify time in hours to keep the cached file
+# When the api-cache-time is reached the cached file will be updated with the API server response.
 api-cache: true
 api-cache-time: 24
 

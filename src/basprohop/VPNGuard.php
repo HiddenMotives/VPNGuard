@@ -1,6 +1,7 @@
 <?php
 namespace basprohop;
 
+use basprohop\libraries\Async;
 use basprohop\libraries\SimpleCache;
 use basprohop\libraries\CommandFunctions;
 use pocketmine\event\Listener;
@@ -13,8 +14,8 @@ use pocketmine\utils\TextFormat;
 
 class VPNGuard extends PluginBase implements Listener
 {
-    public $apiKey, $cache;
-    private $cfg, $commands;
+    public $cache, $cfg;
+    private $commands;
 
     public function onEnable()
     {
@@ -22,21 +23,20 @@ class VPNGuard extends PluginBase implements Listener
         $this->saveDefaultConfig();
         $this->cfg = $this->getConfig()->getAll();
 
+        $this->commands = new CommandFunctions($this);
+
         //If API Cache is Enabled make Cache folder and initialize $cache
         if($this->cfg["api-cache"]) {
             @mkdir($this->getDataFolder() . "cache/");
 
             $this->cache = new SimpleCache();
-            $this->commands = new CommandFunctions($this);
 
             $this->cache->cache_path = $this->getDataFolder() . "cache/";
             $this->cache->cache_time = ($this->cfg["api-cache-time"] * 3600);
         }
 
 
-        if(!empty($this->cfg["api-key"])) {
-            $this->apiKey = $this->cfg["api-key"];
-        } else {
+        if(empty($this->cfg["api-key"])) {
             $this->getLogger()->info(TextFormat::YELLOW . "No API key specified, using free version.");
         }
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -48,80 +48,19 @@ class VPNGuard extends PluginBase implements Listener
         $ipAddress = $player->getAddress();
         $this->getLogger()->info(TextFormat::WHITE . "Player " . TextFormat::GOLD . $player->getName() .
             TextFormat::WHITE . " is trying to connect with IP: " . TextFormat::GRAY . $ipAddress);
-        $obj = $this->getJSON($ipAddress);
 
-        if(empty($obj)) {
-            $this->getLogger()->critical("API Server Seems to be Down");
-            if($this->cfg["bypass-check"]) {
-                return;
-            } else {
-                $player->close("", $this->cfg["bypass-message"]);
-                $event->setCancelled();
-            }
-        } else {
-
-            if ($obj['status'] === "success") {
-                if ($obj['host-ip']) {
-                    $provider = $obj["org"];
-                    $countryCode = $obj["cc"];
-                    $player->close("", $this->cfg["kick-message"]);
-
-                    $this->getLogger()->info(TextFormat::DARK_RED . $player->getName() . TextFormat::WHITE .
-                        " has been disconnected for using an anonymizer: IP Details -> " . $provider . "," . $countryCode);
-
-                    $event->setCancelled();
-                } else {
-                    $this->getLogger()->info(TEXTFormat::GREEN . $player->getName() . TextFormat::WHITE .
-                        " has passed VPNGuard checks.");
-                    return;
-                }
-            } else {
-                $this->getLogger()->warning(TextFormat::WHITE . "API Server Returned Error Message: " .
-                    TextFormat::RED . $obj['msg'] . TextFormat::WHITE . " when " . TextFormat::GOLD . $player->getName() .
-                    TextFormat::WHITE . " tried to connect");
-                if ($this->cfg["bypass-check"]) {
-                    return;
-                } else {
-                    $player->close("", $this->cfg["bypass-message"]);
-                    $event->setCancelled();
-                }
-            }
-        }
+        $this->getServer()->getScheduler()->scheduleAsyncTask(
+            new Async(1, $player->getName(), $ipAddress, $this->getUserAgent(), $this->cfg, $this->cache));
     }
 
     /**
-     * Function that pulls information up regarding an IP address.
-     *
-     * @param $ip - IP that wil be validated.
-     * @return string - JSON formatted response from API server
+     * Used for internal networking purposes.
+     * Function that makes a useragent based on Plugin version and PocketMine version.
+     * @return string - User agent.
      */
-    public function getJSON($ip)
-    {
-        if(!empty($this->apiKey)) {
-            $api = "http://tools.xioax.com/networking/ip/" . $ip . "/" . $this->apiKey;
-        } else {
-            $api = "http://tools.xioax.com/networking/ip/" . $ip;
-        }
-
-        $timeout = $this->cfg["timeout"];
-        $userAgent = ("VPNGuard (PocketMine:" .
+    public function getUserAgent() {
+       return ("VPNGuard v" . $this->getDescription()->getVersion() . " (PocketMine:" .
             $this->getServer()->getVersion() . ") on " . $this->getServer()->getPort());
-
-
-        if($this->cache instanceof SimpleCache) {
-            if ($data = $this->cache->get_cache($ip)) {
-                $data = json_decode($data, true);
-            } else {
-                $data = $this->cache->do_curl($api, $timeout, $userAgent);
-
-                $this->cache->set_cache($ip, $data);
-                $data = json_decode($data, true);
-            }
-        } else {
-            $data = SimpleCache::do_curl($api, $timeout, $userAgent);
-            $data = json_decode($data, true);
-        }
-        return $data;
     }
 
     /**
