@@ -22,6 +22,8 @@ class VPNGuard extends PluginBase implements Listener
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
         $this->cfg = $this->getConfig()->getAll();
+        
+        $this->commands = new CommandFunctions($this);
 
         $this->commands = new CommandFunctions($this);
 
