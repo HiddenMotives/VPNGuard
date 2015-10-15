@@ -3,21 +3,20 @@ namespace basprohop\libraries;
 
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\utils\TextFormat;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Server;
 
-class Async extends AsyncTask
-{
+class Async extends AsyncTask {
     private $data;
-    public function __construct($mode, $player, $ipAddress, $userAgent, $cfg, $cache)
+    public function __construct($mode, $player, $ipAddress, $userAgent, $cfg, $cfgCommands, $cache)
     {
         $this->mode = $mode; //Either 1 or 2, 1 being on player Login, 2 being on /vpnguard lookup command.
         $this->player = $player; $this->ip = $ipAddress;
-        $this->userAgent = $userAgent; $this->cfg = $cfg;
+        $this->userAgent = $userAgent; $this->cfg = $cfg; $this->cfgCommands = $cfgCommands;
         $this->cache = serialize($cache);
     }
 
-    public function onRun()
-    {
+    public function onRun() {
         if(!empty($this->cfg["api-key"])) {
             $api = "http://tools.xioax.com/networking/ip/" . $this->ip . "/" . $this->cfg["api-key"];
         } else {
@@ -72,9 +71,16 @@ class Async extends AsyncTask
 
                     if($this->mode == 1) {
                         if($player != null) {
-							$player->close("", $this->cfg["kick-message"]);
-                            $server->getLogger()->info(TextFormat::DARK_RED . $player->getName() . TextFormat::WHITE .
-                                " has been disconnected for using an anonymizer: IP Details -> " . $provider . "," . $countryCode);
+
+                            foreach ($this->cfgCommands as $command) {
+                                $command = str_replace("%p", $player->getName(), $command);
+                                $server->dispatchCommand(new ConsoleCommandSender(), $command);
+                            }
+
+                            if($this->cfg["logging"]) {
+                                $server->getLogger()->info(TextFormat::DARK_RED . $player->getName() . TextFormat::WHITE .
+                                    " has been disconnected for using an anonymizer: IP Details -> " . $provider . "," . $countryCode);
+                            }
                         }
                     } else if ($this->mode == 2) {
                         $player->sendMessage($this->ip . " belongs to a hosting organization");
@@ -84,8 +90,10 @@ class Async extends AsyncTask
                 } else {
                     if($this->mode == 1) {
                         if($player != null) {
-                            $server->getLogger()->info(TEXTFormat::GREEN . $player->getName() . TextFormat::WHITE .
-                                " has passed VPNGuard checks.");
+                            if($this->cfg["logging"]) {
+                                $server->getLogger()->info(TEXTFormat::GREEN . $player->getName() . TextFormat::WHITE .
+                                    " has passed VPNGuard checks.");
+                            }
                         }
                     } else if ($this->mode == 2) {
                         $player->sendMessage($this->ip . " does not seem to belong to a hosting organization.");
@@ -100,8 +108,14 @@ class Async extends AsyncTask
                             TextFormat::RED . $obj['msg'] . TextFormat::WHITE . " when " . TextFormat::GOLD . $player->getName() .
                             TextFormat::WHITE . " tried to connect");
 
-                        if (!$this->cfg["bypass-check"]) {
-                            $player->close("", $this->cfg["bypass-message"]);
+                        if (((strpos($obj['msg'], "Invalid API Key")) || (strpos($obj['msg'], "Payment Overdue"))) === false) {
+                            $server->getLogger()->critical("Shutting down server to prevent blacklisting on API Database");
+                            $server->shutdown();
+                            return;
+                        } else {
+                            if (!$this->cfg["bypass-check"]) {
+                                $player->close("", $this->cfg["bypass-message"]);
+                            }
                         }
                     }
                 } else if ($this->mode == 2) {

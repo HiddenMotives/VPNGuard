@@ -6,8 +6,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class CommandFunctions
-{
+class CommandFunctions {
     private $plugin;
 
     public function __construct(VPNGuard $plugin){
@@ -44,11 +43,9 @@ class CommandFunctions
      * Deletes all the Cached Files.
      * @param CommandSender $sender - Command Sender
      */
-    public function cmdClearCache(CommandSender $sender)
-    {
+    public function cmdClearCache(CommandSender $sender) {
         $this->plugin->cache->remove_all_cache();
         $sender->sendMessage($this->plugin->msg("All Tasks Completed!"));
-
     }
 
     /**
@@ -57,8 +54,7 @@ class CommandFunctions
      * @param CommandSender $sender - Command Sender
      * @param $ip - IP address whose cached file will be deleted
      */
-    public function cmdClearIP(CommandSender $sender, $ip)
-    {
+    public function cmdClearIP(CommandSender $sender, $ip) {
         if (!filter_var($ip, FILTER_VALIDATE_IP) === false) {
             if($this->plugin->cache->is_cached($ip)) {
                 if($this->plugin->cache->remove_cache($ip)) {
@@ -85,7 +81,7 @@ class CommandFunctions
             if (!filter_var($ip, FILTER_VALIDATE_IP) === false) {
                 $this->plugin->getServer()->getScheduler()->scheduleAsyncTask(
                     new Async(2, $sender->getName(), $ip, $this->plugin->getUserAgent(),
-                        $this->plugin->cfg, $this->plugin->cache));
+                        $this->plugin->cfg, $this->plugin->cfgCommands, $this->plugin->cache));
             } else {
                 $sender->sendMessage($this->plugin->msg($ip . " is not a valid IP address."));
             }

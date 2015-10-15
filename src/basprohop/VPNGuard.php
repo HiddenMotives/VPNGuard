@@ -12,17 +12,21 @@ use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
 
-class VPNGuard extends PluginBase implements Listener
-{
-    public $cache, $cfg;
-    private $commands;
+class VPNGuard extends PluginBase implements Listener {
 
-    public function onEnable()
-    {
+    private $commands;
+    public $cache, $cfg, $cfgCommands = array();
+
+    public function onEnable() {
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
         $this->cfg = $this->getConfig()->getAll();
-        
+
+        $configCommands = $this->cfg["command"];
+        foreach($configCommands as $configCommand){
+            $this->cfgCommands[]=$configCommand;
+        }
+
         $this->commands = new CommandFunctions($this);
 
         //If API Cache is Enabled make Cache folder and initialize $cache
@@ -35,22 +39,23 @@ class VPNGuard extends PluginBase implements Listener
             $this->cache->cache_time = ($this->cfg["api-cache-time"] * 3600);
         }
 
-
         if(empty($this->cfg["api-key"])) {
             $this->getLogger()->info(TextFormat::YELLOW . "No API key specified, using free version.");
         }
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onPlayerLogin(PlayerPreLoginEvent $event)
-    {
+    public function onPlayerLogin(PlayerPreLoginEvent $event) {
         $player = $event->getPlayer();
         $ipAddress = $player->getAddress();
-        $this->getLogger()->info(TextFormat::WHITE . "Player " . TextFormat::GOLD . $player->getName() .
-            TextFormat::WHITE . " is trying to connect with IP: " . TextFormat::GRAY . $ipAddress);
+
+        if($this->cfg["logging"]) {
+            $this->getLogger()->info(TextFormat::WHITE . "Player " . TextFormat::GOLD . $player->getName() .
+                TextFormat::WHITE . " is trying to connect with IP: " . TextFormat::GRAY . $ipAddress);
+        }
 
         $this->getServer()->getScheduler()->scheduleAsyncTask(
-            new Async(1, $player->getName(), $ipAddress, $this->getUserAgent(), $this->cfg, $this->cache));
+            new Async(1, $player->getName(), $ipAddress, $this->getUserAgent(), $this->cfg, $this->cfgCommands, $this->cache));
     }
 
     /**

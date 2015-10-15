@@ -1,4 +1,4 @@
-## VPN GUARD (MCPE Edition) ##
+## VPN GUARD (MC Pocket Edition) ##
 
 # If you have purchased the premium API enter the key otherwise leave blank.
 # You can purchase a key from: http://xioax.com/host-blocker/
@@ -9,12 +9,18 @@ api-key: ""
 api-cache: true
 api-cache-time: 24
 
-# Kick Message to the user who tries to login with a anonymizer.
-kick-message: "You seem to be using a VPN or Proxy."
+# Commands to run if player has connected with a anonymizer
+#command:
+#    - kick %p You seem to be using a VPN or Proxy
+command: []
 
 # Timeout in seconds for connecting to the API server.
 # If it takes longer to connect the plugin will assume API server is down.
 timeout: 10
+
+# Console Logging, displays detailed information every time a player joins
+# the server on console.
+logging: true
 
 # Allow users to connect if API Server encounters any errors (Such as Timeout)?
 bypass-check: false
