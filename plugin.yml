@@ -1,7 +1,9 @@
 name: VPNGuard
 main: basprohop\VPNGuard
-version: 1.0.4
-api: [1.10.0]
+version: 1.0.5
+api:
+  - 1.13.0
+  - 2.0.0
 load: STARTUP
 author: basprohop
 description: VPNGuard will prevent players from joining your server behind any type of anonymizer.
@@ -23,6 +25,12 @@ permissions:
     vpnguard.command.lookup:
         default: op
         description: Allows you to search any IP address in-game and check whether or not it belongs to a hosting organization
+    vpnguard.command.ban:
+        default: op
+        description: Allows you to ban an IP address subnet
+    vpnguard.command.unban:
+        default: op
+        description: Allows you to unban an IP address subnet
     vpnguard.command.about:
         default: true
         description: General information about the plugin

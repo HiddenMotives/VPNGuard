@@ -30,6 +30,12 @@ class CommandFunctions {
             if($sender->hasPermission("vpnguard.command.lookup")) {
                 $sender->sendMessage($this->plugin->msg("/vpnguard lookup <ipv4 address>"));
             }
+            if($sender->hasPermission("vpnguard.command.ban")) {
+                $sender->sendMessage($this->plugin->msg("/vpnguard ban <ipv4 address/subnet>"));
+            }
+            if($sender->hasPermission("vpnguard.command.unban")) {
+                $sender->sendMessage($this->plugin->msg("/vpnguard unban <ipv4 address/subnet>"));
+            }
             if($sender->hasPermission("vpnguard.command.about")) {
                 $sender->sendMessage($this->plugin->msg("/vpnguard about"));
             }
@@ -114,6 +120,88 @@ class CommandFunctions {
         }
         $sender->sendMessage($this->plugin->msg("API Homepage: " . TextFormat::AQUA . "http://xioax.com/host-blocker/"));
 
+    }
+
+
+    /**
+     * Function that is executed when /vpnguard ban <ip> is invoked
+     * Bans the subnet from joining the server
+     * @param CommandSender $sender - Command Sender
+     * @param $ip - IP address that will be banned.
+     */
+    public function cmdBan(CommandSender $sender, $ip) {
+        $split = explode("/", $ip);
+
+        if( (count($split) != 2)) {
+            $sender->sendMessage($this->plugin->msg("Enter a valid IP in CIDR format."));
+            return;
+        }
+
+        if(!is_numeric($split[1])) {
+            $sender->sendMessage($this->plugin->msg("Enter a valid IP subnet in CIDR format."));
+            return;
+        }
+
+        if (!filter_var($split[0], FILTER_VALIDATE_IP) === false) {
+            if (($split[1] <= 32) && ($split[1] >= 0)) {
+                if(in_array($ip, $this->plugin->subnets)) {
+                    $sender->sendMessage($this->plugin->msg($ip . " is already banned."));
+                } else {
+                    array_push($this->plugin->subnets, $ip);
+                    $this->plugin->subnet_list->set("subnets", $this->plugin->subnets);
+                    $this->plugin->subnet_list->save();
+                    $sender->sendMessage($this->plugin->msg($ip . " has been banned."));
+                }
+            } else {
+                $sender->sendMessage($this->plugin->msg($split[1] . " is not a valid IP subnet, it must be in CIDR format."));
+            }
+        } else {
+            $sender->sendMessage($this->plugin->msg($split[0] . " is not a valid IP address."));
+        }
+    }
+
+    /**
+     * Function that is executed when /vpnguard unban <ip> is invoked
+     * Unbans the subnet if currently banned.
+     * @param CommandSender $sender - Command Sender
+     * @param $ip - IP address that will be unbanned
+     */
+    public function cmdUnban(CommandSender $sender, $ip) {
+        $split = explode("/", $ip);
+        $param = $ip;
+
+        if( (count($split) != 2)) {
+            $sender->sendMessage($this->plugin->msg("Enter a valid IP in CIDR format."));
+            return;
+        }
+
+        if(!is_numeric($split[1])) {
+            $sender->sendMessage($this->plugin->msg("Enter a valid IP subnet in CIDR format."));
+            return;
+        }
+
+
+        if (!filter_var($split[0], FILTER_VALIDATE_IP) === false) {
+            if (($split[1] <= 32) && ($split[1] >= 0)) {
+                if(in_array($ip, $this->plugin->subnets)) {
+                    $key = array_search($ip,$this->plugin->subnets);
+                    if($key!==false){
+                        unset($ip,$this->plugin->subnets[$key]);
+                        $this->plugin->subnet_list->set("subnets", $this->plugin->subnets);
+                        $this->plugin->subnet_list->save();
+                        $sender->sendMessage($this->plugin->msg($param . " has been unbanned."));
+                    } else {
+                        $sender->sendMessage($this->plugin->msg("Unable to unban " . $ip));
+                    }
+                } else {
+                    $sender->sendMessage($this->plugin->msg($ip . " is not banned."));
+                }
+            } else {
+                $sender->sendMessage($this->plugin->msg($split[1] . " is not a valid IP subnet, it must be in CIDR format."));
+            }
+        } else {
+            $sender->sendMessage($this->plugin->msg($split[0] . " is not a valid IP address."));
+        }
     }
 
     /**

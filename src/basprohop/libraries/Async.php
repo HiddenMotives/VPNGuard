@@ -79,7 +79,7 @@ class Async extends AsyncTask {
 
                             if($this->cfg["logging"]) {
                                 $server->getLogger()->info(TextFormat::DARK_RED . $player->getName() . TextFormat::WHITE .
-                                    " has been disconnected for using an anonymizer: IP Details -> " . $provider . "," . $countryCode);
+                                    " tried connecting with a anonymizer: IP Details -> " . $provider . "," . $countryCode);
                             }
                         }
                     } else if ($this->mode == 2) {

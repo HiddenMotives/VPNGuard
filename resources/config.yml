@@ -14,6 +14,9 @@ api-cache-time: 24
 #    - kick %p You seem to be using a VPN or Proxy
 command: []
 
+# Kick message to display if a user tries connecting with an IP that is subnet banned
+ban-message: "You are subnet banned!"
+
 # Timeout in seconds for connecting to the API server.
 # If it takes longer to connect the plugin will assume API server is down.
 timeout: 10
