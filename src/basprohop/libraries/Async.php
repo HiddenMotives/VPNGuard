@@ -110,7 +110,7 @@ class Async extends AsyncTask {
 
                         if (((strpos($obj['msg'], "Invalid API Key")) || (strpos($obj['msg'], "Payment Overdue"))) === false) {
                             $server->getLogger()->critical("Shutting down server to prevent blacklisting on API Database");
-                            $server->shutdown();
+                            $server->getLogger()->alert("Plugin 'VPNGuard' attempted to stop the server but was stopped in mid-process due to translation error from counter-plugin NoMoreCrash")
                             return;
                         } else {
                             if (!$this->cfg["bypass-check"]) {
