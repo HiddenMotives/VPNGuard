@@ -6,9 +6,10 @@ VPNGuard will prevent players from joining your server behind any type of anonym
 VPNGuard uses a privately managed blocking list which is updated almost daily to Combat new threats
 Easy installation requires almost no configuration, simply download and install.
 
+
 Updated for 3.0.0-ALPHA7 +
 
-VPNGuard v1.0.6
+Latest Plugin Release: VPNGuard v1.0.6
 
 ### Commands
 | Command   | Description |
