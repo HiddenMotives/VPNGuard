@@ -6,13 +6,16 @@ VPNGuard will prevent players from joining your server behind any type of anonym
 VPNGuard uses a privately managed blocking list which is updated almost daily to Combat new threats
 Easy installation requires almost no configuration, simply download and install.
 
+Updated for 3.0.0-ALPHA7 +
+VPNGuard v1.0.6
+
 ### Commands
 | Command   | Description |
 | :-------- | :---------- |
 |  vpnguard  | **The main command for VPNGuard.** |
 |  vpnguard clearcache | **Deletes all locally saved cache files** |
 |  vpnguard clearip {ip}  | **Deletes the locally saved cache file for the specified IP address** |
-|  vpnguard lookup {ip/player}  | **Allows you to search any IP address or online player in-game and view IP details ** |
+|  vpnguard lookup {ip/player}  | **Allows you to search any IP address or online player in-game and view IP details** |
 |  vpnguard subnet {ban/unban} {ip/subnet block} | **Allows you to ban or unban a IP address subnet** |
 |  vpnguard country {add/remove} {cc} | **Allows you to add or remove a country from your blacklist or whitelist** |
 |  vpnguard about  | **Information about the plugin** |
