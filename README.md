@@ -12,9 +12,9 @@ Easy installation requires almost no configuration, simply download and install.
 |  vpnguard  | **The main command for VPNGuard.** |
 |  vpnguard clearcache | **Deletes all locally saved cache files** |
 |  vpnguard clearip {ip}  | **Deletes the locally saved cache file for the specified IP address** |
-|  vpnguard lookup {ip}  | **Allows you to search any IP address in-game and check whether or not it belongs to a hosting organization.** |
-|  vpnguard ban {ip/subnet block} | **Allows you to ban an IP address subnet** |
-|  vpnguard unban {ip/subnet block} | **Allows you to unban an IP address subnet** |
+|  vpnguard lookup {ip/player}  | **Allows you to search any IP address or online player in-game and view IP details ** |
+|  vpnguard subnet {ban/unban} {ip/subnet block} | **Allows you to ban or unban a IP address subnet** |
+|  vpnguard country {add/remove} {cc} | **Allows you to add or remove a country from your blacklist or whitelist** |
 |  vpnguard about  | **Information about the plugin** |
 
 ### Permissions
@@ -24,8 +24,8 @@ Easy installation requires almost no configuration, simply download and install.
 | vpnguard.command.clearcache | op | Allows you to use the **/vpnguard clearcache** command |
 | vpnguard.command.clearip | op | Allows you to use the **/vpnguard clearip** command |
 | vpnguard.command.lookup | op | Allows you to use the **/vpnguard lookup** command |
-| vpnguard.command.ban | op | Allows you to use the **/vpnguard ban** command |
-| vpnguard.command.unban | op | Allows you to use the **/vpnguard unban** command |
+| vpnguard.command.subnet | op | Allows you to use the **/vpnguard subnet** command |
+| vpnguard.command.country | op | Allows you to use the **/vpnguard country** command |
 | vpnguard.command.about | true | Allows you to use the **/vpnguard about** command |
 
 ### Frequently Asked Questions
@@ -66,9 +66,11 @@ command:
 Which would both kick the player trying to connect to the server and broadcast "playerName is a naughty crafter"
 
 **Q**. I found a IP from a VPN organization not blocked what do I do?
+
 A. Contact the API provider
 
 **Q**. My question is not listed here
+
 A. Contact me with your Question!
 
 
