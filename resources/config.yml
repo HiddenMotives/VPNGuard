@@ -1,4 +1,5 @@
 ## VPN GUARD (MC Pocket Edition) ##
+## Developed for Server Software: PocketMine ##
 
 # If you have purchased the premium API enter the key otherwise leave blank.
 # You can purchase a key from: http://xioax.com/host-blocker/
@@ -13,6 +14,14 @@ api-cache-time: 24
 #command:
 #    - kick %p You seem to be using a VPN or Proxy
 command: []
+
+# Country Mode is a setting that allows you toggle between a country blacklist or whitelist.
+# Meaning you can prevent or only allow access to your server if the connecting user is on your country list.
+# To add or remove countries to your blacklist/whitelist use the command /vpnguard country
+# This feature will only work if you have the proper API Package.
+country_mode: "blacklist"
+# Kick message to display if a user tries connecting from a country that is blacklisted or not on the whitelist.
+country_ban-message: "Sorry, players connecting from your country are not permitted to join this server :("
 
 # Kick message to display if a user tries connecting with an IP that is subnet banned
 ban-message: "You are subnet banned!"
