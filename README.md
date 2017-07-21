@@ -7,9 +7,9 @@ VPNGuard uses a privately managed blocking list which is updated almost daily to
 Easy installation requires almost no configuration, simply download and install.
 
 
-Updated for 3.0.0-ALPHA7 +
+Updated for: **3.0.0-ALPHA7 +**
 
-Latest Plugin Release: VPNGuard v1.0.6
+Latest Plugin Release: **VPNGuard v1.0.6**
 
 ### Commands
 | Command   | Description |
@@ -36,7 +36,7 @@ Latest Plugin Release: VPNGuard v1.0.6
 ### Frequently Asked Questions
 **Q**. The plugin API is outdated when will you make an update?
 
-A. Please update/bump the API version in the config.yml, the plugin should still work. If not please open a Github Issue and let me know.
+A. Please update/bump the API version in the plugin.yml, the plugin should still work. If not please open a Github Issue and let me know.
 
 **Q**. How many players can the plugin look information up for?
 
