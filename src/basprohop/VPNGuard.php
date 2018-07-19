@@ -12,6 +12,8 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\CommandExecutor;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\Config;
+use pocketmine\scheduler\Task;
+use pocketmine\scheduler\TaskScheduler;
 
 
 class VPNGuard extends PluginBase implements Listener {
@@ -87,7 +89,7 @@ class VPNGuard extends PluginBase implements Listener {
                 }
             }
         }
-        $this->getServer()->getScheduler()->scheduleAsyncTask(new Async(1, $this, $player->getName(), $ipAddress));
+        $this->getServer()->getAsyncPool()->submitTask(new Async(1, $this, $player->getName(), $ipAddress));
     }
 
     /**
