@@ -7,9 +7,9 @@ VPNGuard uses a privately managed blocking list which is updated almost daily to
 Easy installation requires almost no configuration, simply download and install.
 
 
-Updated for: **3.0.0-ALPHA7 +**
+Updated for: **3.0.0 +**
 
-Latest Plugin Release: **VPNGuard v1.0.6**
+Latest Plugin Release: **VPNGuard v1.0.7**
 
 ### Commands
 | Command   | Description |
