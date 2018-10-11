@@ -8,9 +8,12 @@ use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Player;
 use pocketmine\Server;
 
-class Async extends AsyncTask {
+class Async extends AsyncTask 
+{
     private $data;
-    public function __construct($mode, VPNGuard $plugin, $sender, $ipAddress){
+   
+    public function __construct($mode, VPNGuard $plugin, $sender, $ipAddress)
+    {
         $this->mode = $mode; //Either 1 or 2, 1 being on player Login, 2 being on /vpnguard lookup command.
         $this->sender = $sender;
         $this->ip = $ipAddress;
@@ -21,7 +24,8 @@ class Async extends AsyncTask {
         $this->cache = serialize($plugin->cache);
     }
 
-    public function onRun() {
+    public function onRun() : void
+        {
         if(!empty($this->cfg["api-key"])) {
             $api = "http://tools.xioax.com/networking/v2/json/" . $this->ip . "/" . $this->cfg["api-key"];
         } else {
@@ -44,7 +48,9 @@ class Async extends AsyncTask {
         $this->cache = serialize($this->cache);
     }
 
-    public function onCompletion(Server $server){
+    public function onCompletion() : void
+        {
+        $server = Server::getInstance();
         $this->cache = unserialize($this->cache);
         $this->data = unserialize($this->data);
         $obj = json_decode($this->data, true);
