@@ -14,6 +14,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Config;
 use pocketmine\scheduler\Task;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Player;
 
 
 class VPNGuard extends PluginBase implements Listener {
@@ -21,6 +22,29 @@ class VPNGuard extends PluginBase implements Listener {
     private $commands;
     public $cache, $cfg, $subnet_list, $country_list, $cfgCommands = array(), $subnets = array(), $countries = array();
 
+    //Hack arround pocketmine randomly crashing......
+    public function hasSecurePermission($player, $permission) : bool
+    {
+      if ($player instanceof Player)
+      {
+        if (!$player->isClosed())
+        {
+          if ($player->hasPermission($permission))
+          {
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
+      }
+      else
+      {
+        return true;
+      }
+    }
+    //End Hack
     public function onEnable() {
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
@@ -134,20 +158,20 @@ class VPNGuard extends PluginBase implements Listener {
         $insufficientPerm = $this->msg(TextFormat::RED . "You do not have permission to use this command!");
         switch ($command->getName()) {
             case "vpnguard":
-                if ($sender->hasPermission("vpnguard.command.vpnguard")) {
+                if ($this->hasSecurePermission($sender, "vpnguard.command.vpnguard")) {
                     if ($numArgs == 0) {
                         $this->commands->cmdEmpty($sender);
                         return true;
                     } else if ($numArgs >= 1) {
                         if (strtolower($args[0]) === "clearcache") {
-                            if ($sender->hasPermission("vpnguard.command.clearcache")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.clearcache")) {
                                 $this->commands->cmdClearCache($sender);
                             } else {
                                 $sender->sendMessage($insufficientPerm);
                             }
                             return true;
                         } else if (strtolower($args[0]) === "clearip") {
-                            if ($sender->hasPermission("vpnguard.command.clearip")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.clearip")) {
                                 if (($numArgs == 2)) {
                                     $this->commands->cmdClearIP($sender, $args[1]);
                                 } else {
@@ -158,7 +182,7 @@ class VPNGuard extends PluginBase implements Listener {
                             }
                             return true;
                         } else if (strtolower($args[0]) === "lookup") {
-                            if ($sender->hasPermission("vpnguard.command.lookup")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.lookup")) {
                                 if (($numArgs == 2)) {
                                     $this->commands->cmdLookup($sender, $args[1]);
                                 } else {
@@ -170,7 +194,7 @@ class VPNGuard extends PluginBase implements Listener {
                             return true;
 
                         } else if (strtolower($args[0]) === "subnet") {
-                            if ($sender->hasPermission("vpnguard.command.subnet")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.subnet")) {
                                 if (($numArgs == 3)) {
                                     $this->commands->cmdSubnet($sender, $args[1], $args[2]);
                                 } else {
@@ -181,7 +205,7 @@ class VPNGuard extends PluginBase implements Listener {
                             }
                             return true;
                         } else if (strtolower($args[0]) === "country") {
-                            if ($sender->hasPermission("vpnguard.command.country")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.country")) {
                                 if (($numArgs == 3)) {
                                     $this->commands->cmdCountry($sender, $args[1], $args[2]);
                                 } else {
@@ -193,7 +217,7 @@ class VPNGuard extends PluginBase implements Listener {
                             return true;
 
                         } else if (strtolower($args[0]) === "about") {
-                            if ($sender->hasPermission("vpnguard.command.about")) {
+                            if ($this->hasSecurePermission($sender, "vpnguard.command.about")) {
                                 $this->commands->cmdAbout($sender);
                             } else {
                                 $sender->sendMessage($insufficientPerm);
