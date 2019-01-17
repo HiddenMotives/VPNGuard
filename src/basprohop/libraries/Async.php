@@ -48,9 +48,8 @@ class Async extends AsyncTask
         $this->cache = serialize($this->cache);
     }
 
-    public function onCompletion() : void
+    public function onCompletion(Server $server) : void
         {
-        $server = Server::getInstance();
         $this->cache = unserialize($this->cache);
         $this->data = unserialize($this->data);
         $obj = json_decode($this->data, true);

@@ -9,7 +9,7 @@ Easy installation requires almost no configuration, simply download and install.
 
 Updated for: **3.0.0 + / 4.0.0 +**
 
-Latest Plugin Release: **VPNGuard v1.0.7 for API 3.0.0 / VPNGuard v1.0.8 for API 4.0.0**
+Latest Plugin Release: **VPNGuard v1.0.7-patch1 for API 3.0.0 / VPNGuard v1.0.8-patch1 for API 4.0.0**
 
 ### Commands
 | Command   | Description |
